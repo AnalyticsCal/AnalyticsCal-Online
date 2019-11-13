@@ -9,8 +9,9 @@ class PolynomialRegression:
     self.order = order
     
   def fit(self, data):
+      # A.X = b
       A = self._getCoefficientMatrix(data)
-      b = self._getResultsVector(data)
+      b = self._getResultVector(data)
       A_Inverse = self._inverse(A)
       X = self._multiply(A_Inverse, b)
       return self._transpose(X)
@@ -27,22 +28,22 @@ class PolynomialRegression:
           power = power + 1            
       
       dim = self.order + 1
-      A = [[0 for x in range(dim)] for y in range(dim)]
+      coefficientMatrix = [[0 for x in range(dim)] for y in range(dim)]
       for i in range(dim):
           for j in range(dim):
-              A[i][j] = dependentVariableSum[i+j]
-      return A
+              coefficientMatrix[i][j] = dependentVariableSum[i+j]
+      return coefficientMatrix
   
-  def _getResultsVector(self, data):
+  def _getResultVector(self, data):
       dim = self.order + 1
-      A = [[0 for x in range(1)] for y in range(dim)]
+      resultVector = [[0 for x in range(1)] for y in range(dim)]
       
       for j in range(dim):
           sum = 0
           for (x, y) in data:
               sum = sum + (pow(x, j) * y)
-          A[j][0] = sum
-      return A
+          resultVector[j][0] = sum
+      return resultVector
   
   def _inverse(self, matrix):
       x = np.array(matrix)
