@@ -1,8 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-import numpy as np
-import matplotlib.pyplot as plt 
+import matrix_operation as mo
 
 class PolynomialRegression:
   def __init__(self, order):
@@ -12,9 +8,9 @@ class PolynomialRegression:
       # A.X = b
       A = self._getCoefficientMatrix(data)
       b = self._getResultVector(data)
-      A_Inverse = self._inverse(A)
-      X = self._multiply(A_Inverse, b)
-      return self._transpose(X)
+      A_Inverse = mo.inverse(A)
+      X = mo.multiply(A_Inverse, b)
+      return mo.transpose(X)[0]
 
   def _getCoefficientMatrix(self, data):
       dependentVariableSum = {}
@@ -44,39 +40,3 @@ class PolynomialRegression:
               sum = sum + (pow(x, j) * y)
           resultVector[j][0] = sum
       return resultVector
-  
-  def _inverse(self, matrix):
-      x = np.array(matrix)
-      y = np.linalg.inv(x)
-      return y
-  
-  def _transpose(self, matrix):
-      matrix_transpose = [[matrix[j][i] for j in range(len(matrix))] for i in range(len(matrix[0]))]
-      return matrix_transpose
-  
-  def _multiply(self, X, Y):
-      return [[sum(a * b for a, b in zip(X_row, Y_col)) for Y_col in zip(*Y)] for X_row in X]
-
-
-data = [[0 for x in range(2)] for y in range(4)]
-data[0][0] = 1
-data[0][1] = 13
-data[1][0] = 2
-data[1][1] = 26
-data[2][0] = 3
-data[2][1] = 42
-data[3][0] = 4
-data[3][1] = 68
-
-independent = []
-dependent = []
-for (x, y) in data:
-    independent.append(x)
-    dependent.append(y)
-
-        
-p1 = PolynomialRegression(2)
-coefficient = p1.fit(data)
-print(type(coefficient))
-print(coefficient)
-plt.scatter(independent, dependent)
