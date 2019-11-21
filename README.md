@@ -1,6 +1,25 @@
 
 # Usage of the PolynomialRegression API
 
+
+
+```
+independent = []
+dependent = []
+for (x, y) in data:
+    independent.append(x)
+    dependent.append(y)
+    
+regression = PolynomialRegression(2)
+coefficient = regression.fit(independent, dependent)
+print(coefficient)
+[8.25, 1.849999999999909, 3.25]
+    
+```
+#### PolynomialRegression(n) <--- Here n indicates the degree of the curve being fit for regression.
+#### coefficient = regression.fit(independent, dependent) <--- independent, dependent are two lists containing indedpendent and dependent variable from the sample
+#### The returned coefficients are listed in increasing order of the degree terms, i.e. (B0, B1, B2, B3, ....)
+
 ```
 data = [[0 for x in range(2)] for y in range(4)]
 data[0][0] = 1
@@ -13,10 +32,10 @@ data[3][0] = 4
 data[3][1] = 68
 
 regression = PolynomialRegression(2)
-coefficient = regression.fit(data)
+coefficient = regression._fit(data)
 print(coefficient)
-#[[8.249999999999318, 1.849999999999909, 3.250000000000057]]
+#[8.25, 1.849999999999909, 3.25]
 ```
 #### PolynomialRegression(n) <--- Here n indicates the degree of the curve being fit for regression.
-#### coefficient = regression.fit(data) <--- data is a two dimensional array holding samples of (independent, dependent)
+#### coefficient = regression._fit(data) <--- data is a two dimensional array holding samples of (independent, dependent)
 #### The returned coefficients are listed in increasing order of the degree terms, i.e. (B0, B1, B2, B3, ....)
