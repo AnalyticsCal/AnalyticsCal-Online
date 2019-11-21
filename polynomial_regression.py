@@ -2,9 +2,21 @@ import matrix_operation as mo
 
 class PolynomialRegression:
   def __init__(self, order):
-    self.order = order
-    
-  def fit(self, data):
+    self.order = order  
+
+  def fit(self, independent, dependent):
+      if len(independent) != len(dependent):
+          raise ValueError(
+            'Number of samples of dependent and independent variables must be same')
+          
+      data = [[0 for x in range(2)] for y in range(len(independent))]
+      for index in range(len(independent)):
+          data[index][0] = independent[index]
+          data[index][1] = dependent[index]
+          
+      return self._fit(data)
+  
+  def _fit(self, data):
       # A.X = b
       A = self._getCoefficientMatrix(data)
       b = self._getResultVector(data)

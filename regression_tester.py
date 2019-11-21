@@ -19,6 +19,10 @@ for (x, y) in data:
 
         
 p1 = PolynomialRegression(2)
-coefficient = p1.fit(data)
+coefficient = p1._fit(data)
+print(coefficient)
+
+p2 = PolynomialRegression(2)
+coefficient = p2.fit(independent, dependent)
 print(coefficient)
 plt.scatter(independent, dependent)
