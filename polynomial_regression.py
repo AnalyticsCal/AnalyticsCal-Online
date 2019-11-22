@@ -20,9 +20,9 @@ class PolynomialRegression:
       # A.X = b
       A = self._getCoefficientMatrix(data)
       b = self._getResultVector(data)
-      A_Inverse = mo.inverse(A)
+      A_Inverse = mo.getMatrixInverse(A)
       X = mo.multiply(A_Inverse, b)
-      return mo.transpose(X)[0]
+      return mo.transposeMatrix(X)[0]
 
   def _getCoefficientMatrix(self, data):
       dependentVariableSum = {}

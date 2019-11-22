@@ -1,83 +1,7 @@
-def determinant(A):
-    n = len(A)
-    AM = copyMatrix(A)
-
-    for fd in range(n):
-        if AM[fd][fd] == 0: 
-            AM[fd][fd] = 1.0e-18
-        for i in range(fd+1,n): 
-            crScaler = AM[i][fd] / AM[fd][fd] 
-            for j in range(n): 
-                AM[i][j] = AM[i][j] - crScaler * AM[fd][j]
-    
-    product = 1.0
-    for i in range(n):
-        product *= AM[i][i]
-
-    return product
-
-def inverse(A, tol=None):
-    checkIfSquareMatrix(A)
-    checkIfNonSingular(A)
-
-    n = len(A)
-    AM = copyMatrix(A)
-    I = identityMatrix(n)
-    IM = copyMatrix(I)
-
-    indices = list(range(n))
-    for fd in range(n):
-        fdScaler = 1.0 / AM[fd][fd]
-        for j in range(n):
-            AM[fd][j] *= fdScaler
-            IM[fd][j] *= fdScaler
-        for i in indices[0:fd] + indices[fd+1:]: 
-            crScaler = AM[i][fd] 
-            for j in range(n): 
-                AM[i][j] = AM[i][j] - crScaler * AM[fd][j]
-                IM[i][j] = IM[i][j] - crScaler * IM[fd][j]
-
-    if checkIfEqual(I, multiply(A,IM),tol):
-        return IM
-    else:
-        raise ArithmeticError("Error in finding inverse")
-
-def zerosMatrix(rows, cols):
-    M = []
-    while len(M) < rows:
-        M.append([])
-        while len(M[-1]) < cols:
-            M[-1].append(0.0)
-
-    return M
-
-def identityMatrix(n):
-    I = zerosMatrix(n, n)
-    for i in range(n):
-        I[i][i] = 1.0
-
-    return I
-
-def copyMatrix(M):
-    rows = len(M); cols = len(M[0])
-    MC = zerosMatrix(rows, cols)
-    for i in range(rows):
-        for j in range(cols):
-            MC[i][j] = M[i][j]
-
-    return MC
-
-# printMatrix(M, decimals=3):
-#    for row in M:
-#        print([round(x,decimals)+0 for x in row])
-
-def transpose(M):
-    if not isinstance(M[0],list):
-        M = [M]
-
+def transposeMatrix(M):
     rows = len(M); cols = len(M[0])
 
-    MT = zerosMatrix(cols, rows)
+    MT = [[0 for x in range(len(M))] for y in range(len(M[0]))]
 
     for i in range(rows):
         for j in range(cols):
@@ -85,14 +9,28 @@ def transpose(M):
 
     return MT
 
+def getMatrixMinor(m,i,j):
+    return [row[:j] + row[j+1:] for row in (m[:i]+m[i+1:])]
+
+def getMatrixDeternminant(m):
+    #base case for 2x2 matrix
+    if len(m) == 2:
+        return m[0][0]*m[1][1]-m[0][1]*m[1][0]
+
+    determinant = 0
+    for c in range(len(m)):
+        determinant += ((-1)**c)*m[0][c]*getMatrixDeternminant(getMatrixMinor(m,0,c))
+    return determinant
+
 def multiply(A, B):
     rowsA = len(A); colsA = len(A[0])
     rowsB = len(B); colsB = len(B[0])
+    
     if colsA != rowsB:
         raise ArithmeticError(
             'Number of A columns must equal number of B rows.')
 
-    C = zerosMatrix(rowsA, colsB)
+    C = [[0 for x in range(colsB)] for y in range(rowsA)]
     for i in range(rowsA):
         for j in range(colsB):
             total = 0
@@ -102,30 +40,25 @@ def multiply(A, B):
 
     return C
 
-def checkIfEqual(A, B, tol=None):
-    if len(A) != len(B) or len(A[0]) != len(B[0]):
-        return False
+def getMatrixInverse(m):
+    determinant = getMatrixDeternminant(m)
+    #special case for 2x2 matrix:
+    if len(m) == 2:
+        return [[m[1][1]/determinant, -1*m[0][1]/determinant],
+                [-1*m[1][0]/determinant, m[0][0]/determinant]]
 
-    for i in range(len(A)):
-        for j in range(len(A[0])):
-            if tol == None:
-                if A[i][j] != B[i][j]:
-                    return False
-            else:
-                if round(A[i][j],tol) != round(B[i][j],tol):
-                    return False
-
-    return True
-
-def checkIfSquareMatrix(A):
-    if len(A) != len(A[0]):
-        raise ArithmeticError("Not a square matrix, inverese cant be found")
-
+    #find matrix of cofactors
+    cofactors = [[0 for x in range(len(m))] for y in range(len(m))]
+    for r in range(len(m)):
+        for c in range(len(m)):
+            minor = getMatrixMinor(m,r,c)
+            cofactors[r][c] = ((-1)**(r+c)) * getMatrixDeternminant(minor)
+            #cofactorRow.append(((-1)**(r+c)) * getMatrixDeternminant(minor))
+        #cofactors.append(cofactorRow)
+    cofactors = transposeMatrix(cofactors)
+    for r in range(len(cofactors)):
+        for c in range(len(cofactors)):
+            cofactors[r][c] = cofactors[r][c]/determinant
+    return cofactors
 
 
-def checkIfNonSingular(A):
-    det = determinant(A)
-    if det != 0:
-        return det
-    else:
-        raise ArithmeticError("Matrix is singular")

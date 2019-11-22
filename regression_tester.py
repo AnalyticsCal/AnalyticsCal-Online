@@ -11,18 +11,26 @@ data[2][1] = 42
 data[3][0] = 4
 data[3][1] = 68
 
+def getPredictions(coefficients, independent):
+    predictionList = []
+    
+    for sampleIndex in range(len(independent)):
+        prediction = 0
+        for index in range(len(coefficient)):
+            prediction = prediction + coefficient[index] * pow(independent[sampleIndex], index)
+        predictionList.append(prediction)
+    return predictionList
+
+
 independent = []
 dependent = []
 for (x, y) in data:
     independent.append(x)
     dependent.append(y)
 
-        
-p1 = PolynomialRegression(2)
-coefficient = p1._fit(data)
-print(coefficient)
-
 p2 = PolynomialRegression(2)
 coefficient = p2.fit(independent, dependent)
 print(coefficient)
 plt.scatter(independent, dependent)
+predictionList = getPredictions(coefficient, independent)
+plt.plot(independent, predictionList)
