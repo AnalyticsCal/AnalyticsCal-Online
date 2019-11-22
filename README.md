@@ -40,4 +40,4 @@ print(coefficient)
 #### PolynomialRegression(n) <--- Here n indicates the degree of the curve being fit for regression.
 #### coefficient = regression._fit(data) <--- data is a two dimensional array holding samples of (independent, dependent)
 #### The returned coefficients are listed in increasing order of the degree terms, i.e. (B0, B1, B2, B3, ....)
->>>>>>> 0b0435f43c8e8776e76cce528042cf288b4d39bf
+
