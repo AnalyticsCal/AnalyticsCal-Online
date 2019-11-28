@@ -1,8 +1,9 @@
 import test_lib as Tester
 import matplotlib.pyplot as plt
 
-#Demo - part 1
 plt.rcParams["figure.figsize"] = (11,11)
+
+#Demo - part 1
 independentList, dependentList = Tester.getAssignmentDataset()
 plt.scatter(independentList, dependentList, s=100)
 Tester.fitLineAndPlot(independentList, dependentList, plt, order=1)
